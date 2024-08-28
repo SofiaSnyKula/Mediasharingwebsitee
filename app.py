@@ -8,23 +8,23 @@ app.secret_key = 'justakey'
 
 s3 = boto3.client('s3')
 dynamodb = boto3.resource('dynamodb', region_name='ca-central-1') 
-table = dynamodb.Table('<enter your dynamodb table name>')
+table = dynamodb.Table('mediasharingwebsite')
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        name = request.form['name']
+        Filename = request.form['name']
         description = request.form['description']
         location = request.form['location']
         file = request.files['file']
-        s3.upload_fileobj(file, '<enter your s3 bucket name>', file.filename)
+        s3.upload_fileobj(file, 'mediasharingwebsite', file.filename)
 
-        # add metadata to DynamoDB table 
+       
         key = file.filename
         table.put_item(
             Item={
                 'id': key,
-                'name': name,
+                'name': Filename,
                 'description': description,
                 'location': location
             }
@@ -34,7 +34,7 @@ def index():
         return redirect('/')
     else:
         try:
-            objects = s3.list_objects(Bucket='<enter your s3 bucket name>')['Contents']
+            objects = s3.list_objects(Bucket='mediasharingwebsite')['Contents']
             files = []
             for obj in objects:
                 if obj['Key'].endswith('.jpg') or obj['Key'].endswith('.png'):
@@ -42,13 +42,13 @@ def index():
                     # retrieving metadata from DynamoDB
                     response = table.get_item(
                         Key={
-                            'id': obj['Key']
+                            'imageId': obj['Key']
                         }
                     )
-                    name = response['Item']['name']
+                    Filename = response['Item']['name']
                     description = response['Item']['description']
                     location = response['Item']['location']
-                    files.append({'key': obj['Key'], 'url': url, 'name': name, 'description': description, 'location': location})
+                    files.append({'key': obj['Key'], 'url': url, 'Filename': Filename, 'description': description, 'location': location})
         except:
             files = []
         return render_template('index.html', files=files)
@@ -56,7 +56,7 @@ def index():
 @app.route('/delete', methods=['POST'])
 def delete_file():
     key = request.form['key']
-    s3.delete_object(Bucket='<enter your s3 bucket name>', Key=key)
+    s3.delete_object(Bucket='mediasharingwebsite', Key=key)
     # deleting metadata from Dynamo db
     table.delete_item(
         Key={
@@ -68,7 +68,7 @@ def delete_file():
 
 @app.route('/thumbnail/<key>')
 def thumbnail(key):
-    response = s3.get_object(Bucket='<enter your s3 bucket name>', Key=key)
+    response = s3.get_object(Bucket='mediasharingwebsite', Key=key)
     image = Image.open(BytesIO(response['Body'].read()))
     image.thumbnail((200, 200))
     image = image.convert('RGB')
