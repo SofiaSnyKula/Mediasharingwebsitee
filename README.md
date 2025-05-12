@@ -1,31 +1,4 @@
-1. Project Specifications 
-• Overview of AWS Services 
-▪ Amazon EC2 
-▪ DynamoDB 
-▪ Amazon S3 
-• Requirements 
-▪ Create an Amazon S3 Bucket 
-▪ Create the Media Database (DynamoDB) 
-▪ Create the Web Front-End 
-▪ Test the Deployment 
-2. Implementation 
-• Creating an Amazon S3 Bucket 
-• Setting Up the Media Database (DynamoDB) 
-• Developing the Web Front-End 
-• Creating a Security Group 
-• Deployment and Testing 
-3. Source Code 
-• HTML and CSS (Front-End) 
-• Python (Back-End with Flask) 
-• Boto3 (AWS SDK for Python) 
-4. Testing and Results 
-• Testing Procedures 
-• Deployment Test Results 
-5. Conclusion 
-• Summary of Achievements 
-• Challenges and Solutions 
-• Future Improvements 
-Project Specifications 
+
 Introduction: This project involves deploying a photo-sharing website using Amazon Web 
 Services (AWS). The website allows users to upload, browse, and delete images, with 
 media content limited to images. The key AWS services used include Amazon S3 for 
